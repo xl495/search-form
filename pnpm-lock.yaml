@@ -14,6 +14,9 @@ importers:
 
   example:
     dependencies:
+      '@tempoi/search-form':
+        specifier: workspace:*
+        version: link:../packages/search-form
       vue:
         specifier: ^3.3.4
         version: 3.3.4
