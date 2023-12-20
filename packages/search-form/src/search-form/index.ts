@@ -1,15 +1,24 @@
 export type {
-    TableColumnFilterPlacement,
-    TableColumnSortOrders
-  } from "./types";
+  IOptions,
+  IGetOptionforKey,
+  IFieldEventValue,
+  IFieldEvent,
+  IField,
+  IExpand,
+} from "./types/index";
+
+export {
+  IType,
+} from "./types/index";
+
   
 import type { App } from "vue";
-import Table from "./index.vue";
+import SearchFormComponents from "./index.vue";
 
-export const PureTable = Object.assign(Table, {
+export const SearchForm = Object.assign(SearchFormComponents, {
 install: function (app: App) {
-    app.component(Table.name, Table);
+    app.component('tempoi-search-form', SearchFormComponents);
 }
 });
 
-export default PureTable;
+export default SearchForm;
