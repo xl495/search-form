@@ -1,15 +1,14 @@
 {
   "name": "@tempoi/search-form",
-  "private": true,
-  "version": "2.1.0",
+  "version": "1.1.1",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc && vite build",
     "preview": "vite preview"
   },
-  "main": "./ui/lib/index.js",
-  "module": "./ui/es/index.js",
+  "main": "./ui/lib/packages/search-form/index.js",
+  "module": "./ui/es/packages/search-form/index.js",
   "files": [
     "ui"
   ],
@@ -17,10 +16,13 @@
     "access": "public"
   },
   "dependencies": {
+    "dayjs": "^1.11.10",
+    "element-plus": "^2.4.1",
     "vue": "^3.3.4"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^4.2.3",
+    "sass": "^1.69.5",
     "typescript": "^5.0.2",
     "vite": "^4.4.5",
     "vue-tsc": "^1.8.5"

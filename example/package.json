@@ -1,15 +1,19 @@
 {
   "name": "example",
-  "private": true,
-  "version": "2.1.0",
+  "version": "1.1.1",
   "type": "module",
+  "private": true,
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc && vite build",
     "preview": "vite preview"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "dependencies": {
     "@tempoi/search-form": "workspace:*",
+    "element-plus": "^2.4.1",
     "vue": "^3.3.4"
   },
   "devDependencies": {

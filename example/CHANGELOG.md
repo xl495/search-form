@@ -1,6 +1,13 @@
 # example
 
-## 2.1.0
+## 1.1.1
+
+### Patch Changes
+
+- Updated dependencies
+  - @tempoi/search-form@1.1.1
+
+## 1.1.0
 
 ### Minor Changes
 
@@ -11,4 +18,4 @@
 - ..
 - Updated dependencies
 - Updated dependencies
-  - @tempoi/search-form@2.1.0
+  - @tempoi/search-form@1.1.0

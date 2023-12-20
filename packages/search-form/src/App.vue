@@ -1,30 +1,80 @@
 <script setup lang="ts">
-import HelloWorld from './components/HelloWorld.vue'
+import { ref } from 'vue'
+import searchForm from './search-form/index.vue'
+import { IType } from './search-form/types';
+
+const fields = ref({
+  'payeeMerchantName': {
+    label: '收款人名称',
+    value: '',
+    key: 'payeeMerchantName',
+    inputType: IType.Input,
+    placeholder: '请输入收款人名称',
+    event: {},
+    attr: {
+      suffixIcon: 'Search',
+    },
+  },
+  'nickName': {
+    label: '昵称',
+    value: '',
+    key: 'nickName',
+    inputType: IType.Input,
+    placeholder: '请输入昵称',
+    event: {},
+    attr: {
+      suffixIcon: 'Search',
+    },
+  },
+  'infoType': {
+    label: '账户性质',
+    value: '',
+    placeholder: '',
+    key: 'infoType',
+    inputType: IType.Select,
+    options: [
+      {
+        label: 'ALL',
+        value: '',
+      },
+    ],
+    optionsKey: 'accountType',
+    event: {},
+    attr: {},
+  },
+  ownerType: {
+    label: '收款人类型',
+    value: '',
+    placeholder: '',
+    key: 'ownerType',
+    inputType: IType.Select,
+    options: [
+      {
+        label: 'ALL',
+        value: '',
+      },
+    ],
+    event: {},
+    attr: {},
+  }
+})
+
+const submit = (data: Record<string, any>) => {
+  console.log(data)
+}
+
 </script>
 
 <template>
-  <div>
-    <a href="https://vitejs.dev" target="_blank">
-      <img src="/vite.svg" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://vuejs.org/" target="_blank">
-      <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
-    </a>
+  <div class="wrap">
+    <search-form style="width: 1200px;" :fields="fields" :label-width="120" @on-submit="submit" />
   </div>
-  <HelloWorld msg="Vite + Vue" />
 </template>
 
-<style scoped>
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
+
+<style lang="scss" >
+.wrap {
+  display: flex;
+  justify-content: center;
 }
 </style>
