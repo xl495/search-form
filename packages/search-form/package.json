@@ -1,6 +1,6 @@
 {
   "name": "@tempoi/search-form",
-  "version": "1.2.1",
+  "version": "1.2.3",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -12,7 +12,7 @@
   "types": "./src/index.d.ts",
   "files": [
     "ui",
-    "src"
+    "./@types"
   ],
   "publishConfig": {
     "access": "public"
