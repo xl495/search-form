@@ -1,38 +1,36 @@
 <script setup lang="ts">
-import searchForm from '@tempoi/search-form'
-
+import { IType } from '@tempoi/search-form'
 
 import { ref } from 'vue'
 
+const searchForm = ref()
+
 const fields = ref({
-  'payeeMerchantName': {
+  payeeMerchantName: {
     label: '收款人名称',
     value: '',
-    key: 'payeeMerchantName',
-    inputType: searchForm.IType.Input,
+    inputType: IType.Input,
     placeholder: '请输入收款人名称',
     event: {},
     attr: {
       suffixIcon: 'Search',
     },
   },
-  'nickName': {
+  nickName: {
     label: '昵称',
     value: '',
-    key: 'nickName',
-    inputType: searchForm.IType.Input,
+    inputType: IType.Input,
     placeholder: '请输入昵称',
     event: {},
     attr: {
       suffixIcon: 'Search',
     },
   },
-  'infoType': {
+  infoType: {
     label: '账户性质',
     value: '',
     placeholder: '',
-    key: 'infoType',
-    inputType: searchForm.IType.Select,
+    inputType: IType.Select,
     options: [
       {
         label: 'ALL',
@@ -47,8 +45,7 @@ const fields = ref({
     label: '收款人类型',
     value: '',
     placeholder: '',
-    key: 'ownerType',
-    inputType: searchForm.IType.Select,
+    inputType: IType.Select,
     options: [
       {
         label: 'ALL',
@@ -62,13 +59,14 @@ const fields = ref({
 
 const submit = (data: Record<string, any>) => {
   console.log(data)
+  console.log('searchForm',searchForm.value);
+  
 }
 
 </script>
 
 <template>
   <div>
-      111
-      <search-form style="width: 1200px;" :fields="fields" :label-width="120" @on-submit="submit" />
+    <m-search-form ref="searchForm" style="width: 1200px;" :fields="fields" :label-width="120" @on-submit="submit" />
   </div>
 </template>

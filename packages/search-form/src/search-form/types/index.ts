@@ -16,6 +16,10 @@ export type IOptions = {
 
 export type IGetOptionforKey = (optionsValue: string | number) => IOptions;
 
+export type IGetOptionLabelForKey = (optionsValue: string | number) => string;
+
+export type IFetchDict = (optionsValue?: string) => Promise<IOptions[]>;
+
 export type IFieldEventValue = number | string | string[] | number[];
 
 export type IFieldEvent = {
@@ -23,15 +27,15 @@ export type IFieldEvent = {
   labelWidth?: string | number;
   value: IFieldEventValue;
   placeholder?: string;
-  key: string;
   inputType: IType;
   event: Event | {};
   attr: HTMLAttributes | any;
   options?: IOptions[] | null;
   optionsKey?: string;
-  getOptionforKey?: IGetOptionforKey;
-  format?: string;
+  getOptionforKey: IGetOptionforKey;
+  getOptionLabelForKey: IGetOptionLabelForKey;
   valueFormat?: string;
+  fetchOptionsMethod: IFetchDict;
   isHidden?: boolean, // 是否隐藏
 }
 

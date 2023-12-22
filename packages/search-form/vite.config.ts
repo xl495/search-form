@@ -17,7 +17,7 @@ export default defineConfig({
     rollupOptions: {
       //忽略打包vue、element-plus
       external: ['vue', 'element-plus'],
-      input: ['index.ts'],
+      input: ['./src/index.ts'],
       output: [
         {
           format: 'es',

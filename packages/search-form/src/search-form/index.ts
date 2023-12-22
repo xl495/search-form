@@ -1,3 +1,6 @@
+import search from "./components/search-form.vue";
+import { getCurrentInstance, provide } from 'vue'
+
 export type {
   IOptions,
   IGetOptionforKey,
@@ -8,17 +11,18 @@ export type {
 } from "./types/index";
 
 export {
-  IType,
+  IType
 } from "./types/index";
 
-  
 import type { App } from "vue";
-import SearchFormComponents from "./index.vue";
 
-export const SearchForm = Object.assign(SearchFormComponents, {
-install: function (app: App) {
-    app.component('tempoi-search-form', SearchFormComponents);
-}
+export const SearchForm = Object.assign(search, {
+  install: function (app: App, options: any) {
+    const inSetup = !!getCurrentInstance()
+    const provideFn = app?.provide ?? (inSetup ? provide : undefined)
+    provideFn && provideFn('mSearchFormFetchOptions', options?.fetchOptions)
+    app.component('m-search-form', search);
+  }
 });
 
 export default SearchForm;
