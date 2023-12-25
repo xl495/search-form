@@ -229,6 +229,8 @@ const onSubmit = () => {
   emits("onSubmit", getSearchData());
 };
 
+props.isAutoSubmit && onSubmit();
+
 // 导出
 const onExport = () => {
   emits("export", getSearchData());
