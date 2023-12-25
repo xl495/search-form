@@ -1,5 +1,11 @@
 # @tempoi/search-form
 
+## 1.2.8
+
+### Patch Changes
+
+- add autoFetch
+
 ## 1.2.7
 
 ### Patch Changes
