@@ -1,15 +1,20 @@
 {
   "name": "@tempoi/search-form",
-  "version": "1.2.3",
+  "version": "1.2.7",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc && vite build",
     "preview": "vite preview"
   },
-  "main": "./ui/lib/packages/search-form/src/index.js",
-  "module": "./ui/es/packages/search-form/src/index.js",
-  "types": "./dts/src/index.d.ts",
+  "homepage": "https://github.com/xl495/search-form",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/xl495/search-form"
+  },
+  "main": "./ui/lib/packages/search-form/src/search-form/index.js",
+  "module": "./ui/es/packages/search-form/src/search-form/index.js",
+  "types": "./dts/index.d.ts",
   "files": [
     "ui",
     "dts"

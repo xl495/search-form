@@ -1,5 +1,29 @@
 # @tempoi/search-form
 
+## 1.2.7
+
+### Patch Changes
+
+- fix typed
+
+## 1.2.6
+
+### Patch Changes
+
+- 修复引用错误
+
+## 1.2.5
+
+### Patch Changes
+
+- type add
+
+## 1.2.4
+
+### Patch Changes
+
+- add types
+
 ## 1.2.3
 
 ### Patch Changes
