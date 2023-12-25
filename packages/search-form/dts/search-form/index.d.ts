@@ -75,7 +75,7 @@ export declare const SearchForm: {
         }>;
         $root: import("vue").ComponentPublicInstance<{}, {}, {}, {}, {}, {}, {}, {}, false, import("vue").ComponentOptionsBase<any, any, any, any, any, any, any, any, any, {}, {}, string, {}>, {}, {}> | null;
         $parent: import("vue").ComponentPublicInstance<{}, {}, {}, {}, {}, {}, {}, {}, false, import("vue").ComponentOptionsBase<any, any, any, any, any, any, any, any, any, {}, {}, string, {}>, {}, {}> | null;
-        $emit: (event: "onSubmit" | "export" | "reset", ...args: any[]) => void;
+        $emit: ((event: "onSubmit", ...args: any[]) => void) & ((event: "export", ...args: any[]) => void) & ((event: "reset", ...args: any[]) => void);
         $el: any;
         $options: import("vue").ComponentOptionsBase<Readonly<import("vue").ExtractPropTypes<{
             fields: {
@@ -126,7 +126,11 @@ export declare const SearchForm: {
         }, {
             getSearchData: () => Record<string, any>;
             fetchOptionsMethod: (...rest: any) => Promise<import("./types/index").IOptions[]>;
-        }, unknown, {}, {}, import("vue").ComponentOptionsMixin, import("vue").ComponentOptionsMixin, ("onSubmit" | "export" | "reset")[], string, {
+        }, unknown, {}, {}, import("vue").ComponentOptionsMixin, import("vue").ComponentOptionsMixin, {
+            onSubmit: (...args: any[]) => void;
+            export: (...args: any[]) => void;
+            reset: (...args: any[]) => void;
+        }, string, {
             fields: import("./types/index").IField;
             labelWidth: string | number;
             isSearchLoading: boolean;
@@ -259,7 +263,11 @@ export declare const SearchForm: {
 }, {
     getSearchData: () => Record<string, any>;
     fetchOptionsMethod: (...rest: any) => Promise<import("./types/index").IOptions[]>;
-}, unknown, {}, {}, import("vue").ComponentOptionsMixin, import("vue").ComponentOptionsMixin, ("onSubmit" | "export" | "reset")[], "onSubmit" | "export" | "reset", {
+}, unknown, {}, {}, import("vue").ComponentOptionsMixin, import("vue").ComponentOptionsMixin, {
+    onSubmit: (...args: any[]) => void;
+    export: (...args: any[]) => void;
+    reset: (...args: any[]) => void;
+}, string, {
     fields: import("./types/index").IField;
     labelWidth: string | number;
     isSearchLoading: boolean;

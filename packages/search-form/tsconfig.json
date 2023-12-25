@@ -12,9 +12,7 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
-
-    "declaration": true,
-    "emitDeclarationOnly": true,
+    "noEmit": true,
 
     /* Linting */
     "strict": true,

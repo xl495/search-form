@@ -1,10 +1,17 @@
-import { defineConfig } from 'vite'
+import { UserConfig, defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import { resolve } from 'path'
+import dts from 'vite-plugin-dts';
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [vue()],
+  plugins: [
+    dts({
+      outDir: ['./dts'],
+      include: ['./src/'],
+    }),
+    vue()
+  ],
   base: './',
   build: {
     target: 'modules',
@@ -17,7 +24,7 @@ export default defineConfig({
     rollupOptions: {
       //忽略打包vue、element-plus
       external: ['vue', 'element-plus'],
-      input: ['./src/index.ts'],
+      input: ['./src/search-form/index.ts'],
       output: [
         {
           format: 'es',
@@ -42,8 +49,7 @@ export default defineConfig({
     },
     lib: {
       entry: './index.js',
-      name: 'shuge',
       formats: ['es', 'cjs'],
     },
   }
-})
+}) as UserConfig

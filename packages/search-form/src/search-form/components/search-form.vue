@@ -173,7 +173,7 @@ const initDefault = () => {
 
       return findData;
     };
-    element.getOptionLabelForKey = (value: string | number) => element?.getOptionforKey(value)?.label
+    element.getOptionLabelForKey = (value: string | number) => element?.getOptionforKey && element?.getOptionforKey(value)?.label || ''
 
     if (element.optionsKey && (typeof fetchOptionsMethod === 'function' || typeof element.fetchOptionsMethod === 'function')) {
       element.attr.loading = true

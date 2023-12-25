@@ -26,10 +26,10 @@ export type IFieldEvent = {
     attr: HTMLAttributes | any;
     options?: IOptions[] | null;
     optionsKey?: string;
-    getOptionforKey: IGetOptionforKey;
-    getOptionLabelForKey: IGetOptionLabelForKey;
+    getOptionforKey?: IGetOptionforKey;
+    getOptionLabelForKey?: IGetOptionLabelForKey;
     valueFormat?: string;
-    fetchOptionsMethod: IFetchDict;
+    fetchOptionsMethod?: IFetchDict;
     isHidden?: boolean;
 };
 export type IField = Record<string, IFieldEvent>;

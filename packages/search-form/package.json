@@ -9,10 +9,10 @@
   },
   "main": "./ui/lib/packages/search-form/src/index.js",
   "module": "./ui/es/packages/search-form/src/index.js",
-  "types": "./src/index.d.ts",
+  "types": "./dts/src/index.d.ts",
   "files": [
     "ui",
-    "./@types"
+    "dts"
   ],
   "publishConfig": {
     "access": "public"
