@@ -105,6 +105,8 @@ const _fields = ref<IField>(props.fields);
 
 const _fieldsDefaultValue = ref<Record<string, string | number | string[] | number[]>>({});
 
+const fetchOptionsMethodPromise: any[] = [];
+
 const fetchOptionsMethod = inject<(...rest: any) => Promise<IOptions[]>>('mSearchFormFetchOptions',
   () => Promise.resolve([]))
 
@@ -180,11 +182,20 @@ const initDefault = () => {
       const method = typeof element.fetchOptionsMethod === 'function' ? element.fetchOptionsMethod : fetchOptionsMethod
       method(element.optionsKey).then((res: any) => {
         element.options = res;
+        return {
+          result: res,
+          element: element,
+        }
+      }).then(res => {
+        if (element.transformOptions && typeof element.transformOptions === 'function') {
+          element.options = element?.transformOptions(res.result)
+        }
       }).catch((err: any) => {
         throw new Error(err)
       }).finally(() => {
         element.attr.loading = false
       })
+      fetchOptionsMethodPromise.push(method(element.optionsKey))
     }
   }
 };
@@ -229,7 +240,9 @@ const onSubmit = () => {
   emits("onSubmit", getSearchData());
 };
 
-props.isAutoSubmit && onSubmit();
+Promise.all(fetchOptionsMethodPromise).then(() => {
+  props.isAutoSubmit && onSubmit();
+})
 
 // 导出
 const onExport = () => {

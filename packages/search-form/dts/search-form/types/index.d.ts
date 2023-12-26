@@ -16,6 +16,7 @@ export type IGetOptionforKey = (optionsValue: string | number) => IOptions;
 export type IGetOptionLabelForKey = (optionsValue: string | number) => string;
 export type IFetchDict = (optionsValue?: string) => Promise<IOptions[]>;
 export type IFieldEventValue = number | string | string[] | number[];
+export type ITransformOptions = (options?: IOptions[]) => IOptions[];
 export type IFieldEvent = {
     label: string;
     labelWidth?: string | number;
@@ -30,6 +31,7 @@ export type IFieldEvent = {
     getOptionLabelForKey?: IGetOptionLabelForKey;
     valueFormat?: string;
     fetchOptionsMethod?: IFetchDict;
+    transformOptions?: ITransformOptions;
     isHidden?: boolean;
 };
 export type IField = Record<string, IFieldEvent>;

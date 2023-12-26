@@ -1,5 +1,11 @@
 # @tempoi/search-form
 
+## 1.2.9
+
+### Patch Changes
+
+- 优化字典方法
+
 ## 1.2.8
 
 ### Patch Changes
