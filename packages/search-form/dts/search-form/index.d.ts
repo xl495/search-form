@@ -1,5 +1,6 @@
 export type { IOptions, IGetOptionforKey, IFieldEventValue, IFieldEvent, IField, IExpand, } from "./types/index";
 export { IType } from "./types/index";
+export { initDefaultData } from "./utils/index";
 import type { App } from "vue";
 export declare const SearchForm: {
     new (...args: any[]): {

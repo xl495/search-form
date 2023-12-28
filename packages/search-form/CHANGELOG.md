@@ -1,5 +1,59 @@
 # @tempoi/search-form
 
+## 1.2.18
+
+### Patch Changes
+
+- fix func
+
+## 1.2.17
+
+### Patch Changes
+
+- add method
+
+## 1.2.16
+
+### Patch Changes
+
+- 优化获取方法
+
+## 1.2.15
+
+### Patch Changes
+
+- 修复类型提示
+
+## 1.2.14
+
+### Patch Changes
+
+- 优化方法
+
+## 1.2.13
+
+### Patch Changes
+
+- fix fetch method
+
+## 1.2.12
+
+### Patch Changes
+
+- 调整顺序
+
+## 1.2.11
+
+### Patch Changes
+
+- fix fetch
+
+## 1.2.10
+
+### Patch Changes
+
+- fix
+
 ## 1.2.9
 
 ### Patch Changes

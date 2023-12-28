@@ -14,6 +14,10 @@ export {
   IType
 } from "./types/index";
 
+export {
+  initDefaultData
+} from "./utils/index";
+
 import type { App } from "vue";
 
 export const SearchForm = Object.assign(search, {

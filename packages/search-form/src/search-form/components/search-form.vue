@@ -37,7 +37,7 @@
         <el-form-item :class="['el-form-item-last', props.expand.classes]" :style="props.expand.style">
           <el-button :style="{ 'min-width': props.expand?.minWidth || '6.25rem' }" @click="onReset">重置</el-button>
           <el-button type="primary" :style="{ 'min-width': props.expand?.minWidth || '6.25rem' }"
-            :loading="isSearchLoading" @click="onSubmit">查询</el-button>
+            :loading="isSearchLoading" @click="onSubmit()">查询</el-button>
           <el-button v-if="props.expand.isExport" :loading="props.expand.isExportLoading" type="primary"
             :style="{ 'min-width': props.expand?.minWidth || '6.25rem' }" @click="onExport">导出</el-button>
           <slot name="button-group" />
@@ -62,6 +62,7 @@ import {
   ElDatePicker,
   ElButton,
 } from "element-plus";
+import { initDefaultRow , isEmpty } from '../utils'
 
 type IProps = {
   fields: IField;
@@ -105,44 +106,22 @@ const _fields = ref<IField>(props.fields);
 
 const _fieldsDefaultValue = ref<Record<string, string | number | string[] | number[]>>({});
 
-const fetchOptionsMethodPromise: any[] = [];
-
 const fetchOptionsMethod = inject<(...rest: any) => Promise<IOptions[]>>('mSearchFormFetchOptions',
   () => Promise.resolve([]))
 
-const isEmpty = (value: any) => {
-  if (value === null || value === undefined) {
-    return true;
-  }
-
-  if (typeof value === "string" && value.trim() === "") {
-    return true;
-  }
-
-  if (Array.isArray(value) && value.length === 0) {
-    return true;
-  }
-
-  if (typeof value === "object" && Object.keys(value).length === 0) {
-    return true;
-  }
-
-  if (value === 0) {
-    return true;
-  }
-
-  return false;
-};
 
 const searchRef = ref();
 
 const isSearchLoading = ref(false);
 
-const initDefault = () => {
+const initDefault = async () => {
   for (const key in props.fields) {
     const element: IFieldEvent = props.fields[key];
     _fieldsDefaultValue.value[key] = element.value;
     // 封装 Select 获取方法
+    if (element.inputType === IType.Select && element.getOptionforKey === undefined) {
+      initDefaultRow(element)
+    }
     if (element.inputType === IType.Select && element.optionsKey) {
       // 如果存在 Url
       let options: IOptions[] = [];
@@ -150,37 +129,10 @@ const initDefault = () => {
         options.push(...element?.options);
       }
     }
-    element.getOptionforKey = element.getOptionforKey = (
-      value: string | number
-    ): IOptions => {
-      // 不存在值 直接返回 一个空对象 防止取不到值 报错
-      if ([undefined, null].includes((value as unknown) as null | undefined)) {
-        return {
-          value: "-",
-          label: "-",
-        };
-      }
-      const findData: IOptions | undefined = (element.options as IOptions[]).find(
-        (item) => {
-          return item.value === value;
-        }
-      );
-
-      if (!findData) {
-        return {
-          value: "-",
-          label: "-",
-        };
-      }
-
-      return findData;
-    };
-    element.getOptionLabelForKey = (value: string | number) => element?.getOptionforKey && element?.getOptionforKey(value)?.label || ''
-
     if (element.optionsKey && (typeof fetchOptionsMethod === 'function' || typeof element.fetchOptionsMethod === 'function')) {
       element.attr.loading = true
       const method = typeof element.fetchOptionsMethod === 'function' ? element.fetchOptionsMethod : fetchOptionsMethod
-      method(element.optionsKey).then((res: any) => {
+      await method(element.optionsKey).then((res: any) => {
         element.options = res;
         return {
           result: res,
@@ -195,8 +147,8 @@ const initDefault = () => {
       }).finally(() => {
         element.attr.loading = false
       })
-      fetchOptionsMethodPromise.push(method(element.optionsKey))
     }
+
   }
 };
 
@@ -240,9 +192,7 @@ const onSubmit = () => {
   emits("onSubmit", getSearchData());
 };
 
-Promise.all(fetchOptionsMethodPromise).then(() => {
-  props.isAutoSubmit && onSubmit();
-})
+props.isAutoSubmit && onSubmit();
 
 // 导出
 const onExport = () => {
@@ -263,11 +213,6 @@ const getToolRow = () => {
 
 // 重置
 const onReset = () => {
-  for (const key in _fields.value) {
-    const element: IFieldEvent = _fields.value[key];
-    element && (element.value = _fieldsDefaultValue.value[key]);
-  }
-
   onSubmit();
 };
 

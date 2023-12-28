@@ -14,7 +14,7 @@ export type IOptions = {
 };
 export type IGetOptionforKey = (optionsValue: string | number) => IOptions;
 export type IGetOptionLabelForKey = (optionsValue: string | number) => string;
-export type IFetchDict = (optionsValue?: string) => Promise<IOptions[]>;
+export type IFetchDict = Promise<IOptions[]>;
 export type IFieldEventValue = number | string | string[] | number[];
 export type ITransformOptions = (options?: IOptions[]) => IOptions[];
 export type IFieldEvent = {

@@ -49,6 +49,10 @@ const fields = ref<IField>({
                 label: 'ALL',
                 value: '',
             },
+            {
+                label: 'ALL1',
+                value: 0,
+            },
         ],
         event: {},
         attr: {},
