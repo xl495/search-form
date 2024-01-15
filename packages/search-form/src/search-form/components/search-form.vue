@@ -213,7 +213,34 @@ const getToolRow = () => {
 
 // 重置
 const onReset = () => {
-  onSubmit();
+
+  let _fieldsValue: Record<string, any> = {};
+  
+  for (const key in _fieldsDefaultValue.value) {
+    if (Object.prototype.hasOwnProperty.call(_fieldsDefaultValue.value, key)) {
+      const value = _fields.value[key].value = _fieldsDefaultValue.value[key];
+
+      if (
+        !isEmpty(value) &&
+        ["createdAt", "updatedAt"].includes(key) &&
+        Array.isArray(value) &&
+        value.length
+      ) {
+        // 把查询开始时间设置为 00:00:00
+        // 把查询结束时间设置为 23:59:59
+        _fieldsValue[key] = [
+          dayjs(value[0]).format("YYYY-MM-DDT00:00:00.sssZ"),
+          dayjs(value[1]).format("YYYY-MM-DDT23:59:59.sssZ"),
+        ];
+      } else if (value instanceof Array) {
+        if (value.length !== 0) _fieldsValue[key] = value;
+      } else if (!isEmpty(value)) {
+        _fieldsValue[key] = value;
+      }
+    }
+  }
+  
+  emits("onSubmit", _fieldsValue);
 };
 
 const shortcuts = [

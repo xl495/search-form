@@ -6,7 +6,7 @@ import { IField, IType } from './search-form/types';
 const fields = ref<IField>({
     payeeMerchantName: {
         label: '收款人名称',
-        value: '',
+        value: '1',
         inputType: IType.Input,
         placeholder: '请输入收款人名称',
         event: {},

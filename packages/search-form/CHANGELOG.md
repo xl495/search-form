@@ -1,5 +1,29 @@
 # @tempoi/search-form
 
+## 1.2.22
+
+### Patch Changes
+
+- fix onReset bug
+
+## 1.2.21
+
+### Patch Changes
+
+- fix
+
+## 1.2.20
+
+### Patch Changes
+
+- fix on-reset
+
+## 1.2.19
+
+### Patch Changes
+
+- fix reset
+
 ## 1.2.18
 
 ### Patch Changes
