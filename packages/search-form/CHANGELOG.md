@@ -1,5 +1,17 @@
 # @tempoi/search-form
 
+## 1.2.24
+
+### Patch Changes
+
+- fix submit params
+
+## 1.2.23
+
+### Patch Changes
+
+- build product
+
 ## 1.2.22
 
 ### Patch Changes
