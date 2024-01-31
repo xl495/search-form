@@ -9,9 +9,11 @@ const fields = ref<IField>({
         value: '1',
         inputType: IType.Input,
         placeholder: '请输入收款人名称',
+        isInputTrim: false,
         event: {},
         attr: {
             suffixIcon: 'Search',
+            
         },
     },
     'nickName': {

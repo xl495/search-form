@@ -1,45 +1,131 @@
 <template>
-  <el-form ref="searchRef" class="m-search-model-form" :size="props.size" :model="_fields" :label-width="labelWidth"
-    :label-position="props.labelPosition">
-    <el-row :gutter="Number(props.rowGutter)" type="flex" :justify="props.rowJustify">
-      <el-col v-for="(item, key) in _fields" :key="key" :span="item.isHidden ? 0 : Number(props.rowSpan)">
+  <el-form
+    ref="searchRef"
+    class="m-search-model-form"
+    :size="props.size"
+    :model="_fields"
+    :label-width="labelWidth"
+    :label-position="props.labelPosition"
+  >
+    <el-row
+      :gutter="Number(props.rowGutter)"
+      type="flex"
+      :justify="props.rowJustify"
+    >
+      <el-col
+        v-for="(item, key) in _fields"
+        :key="key"
+        :span="item.isHidden ? 0 : Number(props.rowSpan)"
+      >
         <template v-if="isEmpty(item.isHidden) || item.isHidden === false">
-          <el-form-item v-if="item.inputType === IType.Input" :label="item.label" :label-width="item.labelWidth">
-            <el-input v-model="_fields[key].value" v-bind="item.attr" :placeholder="item.placeholder || '请输入'" clearable
-              v-on="item.event" />
+          <el-form-item
+            v-if="item.inputType === IType.Input"
+            :label="item.label"
+            :label-width="item.labelWidth"
+          >
+            <el-input
+              v-model="_fields[key].value"
+              @blur="blurInputText(_fields[key])"
+              v-bind="item.attr"
+              :placeholder="item.placeholder || '请输入'"
+              clearable
+              v-on="item.event"
+            />
           </el-form-item>
-          <el-form-item v-else-if="item.inputType === IType.Select" :label="item.label" :label-width="item.labelWidth">
-            <el-select v-model="_fields[key].value" :placeholder="item.placeholder || '请选择'" v-bind="item.attr" clearable
-              v-on="item.event">
-              <el-option v-for="(select, ISelect) in item.options" :key="ISelect" :label="select.label"
-                :value="select.value" :disabled="select?.disabled === true" />
+          <el-form-item
+            v-else-if="item.inputType === IType.Select"
+            :label="item.label"
+            :label-width="item.labelWidth"
+          >
+            <el-select
+              v-model="_fields[key].value"
+              :placeholder="item.placeholder || '请选择'"
+              v-bind="item.attr"
+              clearable
+              v-on="item.event"
+            >
+              <el-option
+                v-for="(select, ISelect) in item.options"
+                :key="ISelect"
+                :label="select.label"
+                :value="select.value"
+                :disabled="select?.disabled === true"
+              />
             </el-select>
           </el-form-item>
-          <el-form-item v-else-if="item.inputType === IType.Date || item.inputType === IType.Daterange
-            " :label="item.label" :label-width="item.labelWidth">
-            <el-date-picker v-model="_fields[key].value" style="--el-date-editor-daterange-width: 100%"
-              :type="item.inputType === IType.Date ? 'date' : 'daterange'" :placeholder="item.placeholder || '请选择'"
+          <el-form-item
+            v-else-if="
+              item.inputType === IType.Date ||
+              item.inputType === IType.Daterange
+            "
+            :label="item.label"
+            :label-width="item.labelWidth"
+          >
+            <el-date-picker
+              v-model="_fields[key].value"
+              style="--el-date-editor-daterange-width: 100%"
+              :type="item.inputType === IType.Date ? 'date' : 'daterange'"
+              :placeholder="item.placeholder || '请选择'"
               :value-format="item.valueFormat || 'YYYY-MM-DDTHH:mm:ss.sssZ'"
-              :shortcuts="item.inputType === IType.Daterange ? shortcuts : []" v-bind="item.attr" clearable
-              v-on="item.event" />
+              :shortcuts="item.inputType === IType.Daterange ? shortcuts : []"
+              v-bind="item.attr"
+              clearable
+              v-on="item.event"
+            />
           </el-form-item>
-          <el-form-item v-else-if="item.inputType === IType.DateTime || item.inputType === IType.Datetimerange
-            " :label="item.label" :label-width="item.labelWidth">
-            <el-date-picker v-model="_fields[key].value"
-              :type="item.inputType === IType.DateTime ? 'datetime' : 'datetimerange'"
-              :placeholder="item.placeholder || '请选择'" :value-format="item.valueFormat || 'YYYY-MM-DDTHH:mm:ss.sssZ'"
-              :shortcuts="item.inputType === IType.Datetimerange ? shortcuts : []" v-bind="item.attr" clearable
-              v-on="item.event" />
+          <el-form-item
+            v-else-if="
+              item.inputType === IType.DateTime ||
+              item.inputType === IType.Datetimerange
+            "
+            :label="item.label"
+            :label-width="item.labelWidth"
+          >
+            <el-date-picker
+              v-model="_fields[key].value"
+              :type="
+                item.inputType === IType.DateTime ? 'datetime' : 'datetimerange'
+              "
+              :placeholder="item.placeholder || '请选择'"
+              :value-format="item.valueFormat || 'YYYY-MM-DDTHH:mm:ss.sssZ'"
+              :shortcuts="
+                item.inputType === IType.Datetimerange ? shortcuts : []
+              "
+              v-bind="item.attr"
+              clearable
+              v-on="item.event"
+            />
           </el-form-item>
         </template>
       </el-col>
-      <el-col class="m-search-model-last" :span="getToolRow() || Number(props.rowSpan)">
-        <el-form-item :class="['el-form-item-last', props.expand.classes]" :style="props.expand.style">
-          <el-button :style="{ 'min-width': props.expand?.minWidth || '6.25rem' }" @click="onReset">重置</el-button>
-          <el-button type="primary" :style="{ 'min-width': props.expand?.minWidth || '6.25rem' }"
-            :loading="isSearchLoading" @click="onSubmit()">查询</el-button>
-          <el-button v-if="props.expand.isExport" :loading="props.expand.isExportLoading" type="primary"
-            :style="{ 'min-width': props.expand?.minWidth || '6.25rem' }" @click="onExport">导出</el-button>
+      <el-col
+        class="m-search-model-last"
+        :span="getToolRow() || Number(props.rowSpan)"
+      >
+        <el-form-item
+          :class="['el-form-item-last', props.expand.classes]"
+          :style="props.expand.style"
+        >
+          <el-button
+            :style="{ 'min-width': props.expand?.minWidth || '6.25rem' }"
+            @click="onReset"
+            >重置</el-button
+          >
+          <el-button
+            type="primary"
+            :style="{ 'min-width': props.expand?.minWidth || '6.25rem' }"
+            :loading="isSearchLoading"
+            @click="onSubmit()"
+            >查询</el-button
+          >
+          <el-button
+            v-if="props.expand.isExport"
+            :loading="props.expand.isExportLoading"
+            type="primary"
+            :style="{ 'min-width': props.expand?.minWidth || '6.25rem' }"
+            @click="onExport"
+            >导出</el-button
+          >
           <slot name="button-group" />
         </el-form-item>
       </el-col>
@@ -50,7 +136,14 @@
 <script lang="ts" setup>
 import { ref, effect, inject } from "vue";
 import dayjs from "dayjs";
-import { IField, IFieldEvent, IFieldEventValue, IType, IExpand, IOptions } from "../types/index";
+import {
+  IField,
+  IFieldEvent,
+  IFieldEventValue,
+  IType,
+  IExpand,
+  IOptions,
+} from "../types/index";
 import {
   ElForm,
   ElFormItem,
@@ -62,7 +155,7 @@ import {
   ElDatePicker,
   ElButton,
 } from "element-plus";
-import { initDefaultRow , isEmpty } from '../utils'
+import { initDefaultRow, isEmpty } from "../utils";
 
 type IProps = {
   fields: IField;
@@ -104,11 +197,14 @@ const emits = defineEmits(["onSubmit", "export", "reset"]);
 
 const _fields = ref<IField>(props.fields);
 
-const _fieldsDefaultValue = ref<Record<string, string | number | string[] | number[]>>({});
+const _fieldsDefaultValue = ref<
+  Record<string, string | number | string[] | number[]>
+>({});
 
-const fetchOptionsMethod = inject<(...rest: any) => Promise<IOptions[]>>('mSearchFormFetchOptions',
-  () => Promise.resolve([]))
-
+const fetchOptionsMethod = inject<(...rest: any) => Promise<IOptions[]>>(
+  "mSearchFormFetchOptions",
+  () => Promise.resolve([])
+);
 
 const searchRef = ref();
 
@@ -119,8 +215,11 @@ const initDefault = async () => {
     const element: IFieldEvent = props.fields[key];
     _fieldsDefaultValue.value[key] = element.value;
     // 封装 Select 获取方法
-    if (element.inputType === IType.Select && element.getOptionforKey === undefined) {
-      initDefaultRow(element)
+    if (
+      element.inputType === IType.Select &&
+      element.getOptionforKey === undefined
+    ) {
+      initDefaultRow(element);
     }
     if (element.inputType === IType.Select && element.optionsKey) {
       // 如果存在 Url
@@ -129,26 +228,39 @@ const initDefault = async () => {
         options.push(...element?.options);
       }
     }
-    if (element.optionsKey && (typeof fetchOptionsMethod === 'function' || typeof element.fetchOptionsMethod === 'function')) {
-      element.attr.loading = true
-      const method = typeof element.fetchOptionsMethod === 'function' ? element.fetchOptionsMethod : fetchOptionsMethod
-      await method(element.optionsKey).then((res: any) => {
-        element.options = res;
-        return {
-          result: res,
-          element: element,
-        }
-      }).then(res => {
-        if (element.transformOptions && typeof element.transformOptions === 'function') {
-          element.options = element?.transformOptions(res.result)
-        }
-      }).catch((err: any) => {
-        throw new Error(err)
-      }).finally(() => {
-        element.attr.loading = false
-      })
+    if (
+      element.optionsKey &&
+      (typeof fetchOptionsMethod === "function" ||
+        typeof element.fetchOptionsMethod === "function")
+    ) {
+      element.attr.loading = true;
+      const method =
+        typeof element.fetchOptionsMethod === "function"
+          ? element.fetchOptionsMethod
+          : fetchOptionsMethod;
+      await method(element.optionsKey)
+        .then((res: any) => {
+          element.options = res;
+          return {
+            result: res,
+            element: element,
+          };
+        })
+        .then((res) => {
+          if (
+            element.transformOptions &&
+            typeof element.transformOptions === "function"
+          ) {
+            element.options = element?.transformOptions(res.result);
+          }
+        })
+        .catch((err: any) => {
+          throw new Error(err);
+        })
+        .finally(() => {
+          element.attr.loading = false;
+        });
     }
-
   }
 };
 
@@ -162,7 +274,7 @@ effect(() => {
 const getSearchData = () => {
   const searchData: Record<string, any> = {};
   for (const key in _fields.value) {
-    const item = _fields.value[key]
+    const item = _fields.value[key];
     if (Object.prototype.hasOwnProperty.call(_fields.value, key)) {
       const value: IFieldEventValue = item.value;
       if (
@@ -206,19 +318,20 @@ const getToolRow = () => {
   if (Object.keys(_fields.value).length % colNumber === 0) {
     colSpan = 24;
   } else {
-    colSpan = 24 - (Object.keys(_fields.value).length % colNumber) * Number(props.rowSpan);
+    colSpan =
+      24 -
+      (Object.keys(_fields.value).length % colNumber) * Number(props.rowSpan);
   }
   return colSpan;
 };
 
 // 重置
 const onReset = () => {
-
   let _fieldsValue: Record<string, any> = {};
-  
+
   for (const key in _fieldsDefaultValue.value) {
     if (Object.prototype.hasOwnProperty.call(_fieldsDefaultValue.value, key)) {
-      const value = _fields.value[key].value = _fieldsDefaultValue.value[key];
+      const value = (_fields.value[key].value = _fieldsDefaultValue.value[key]);
 
       if (
         !isEmpty(value) &&
@@ -239,8 +352,13 @@ const onReset = () => {
       }
     }
   }
-  
+
   emits("onSubmit", _fieldsValue);
+};
+
+const blurInputText = (item: IFieldEvent) => {
+  if (!item.value || item?.isInputTrim === false) return;
+  item.value = item.value.toString().trim();
 };
 
 const shortcuts = [
@@ -275,13 +393,12 @@ const shortcuts = [
 
 defineExpose({
   getSearchData,
-  fetchOptionsMethod
+  fetchOptionsMethod,
 });
 </script>
 
 <style lang="scss">
 .m-search-model-form {
-
   .el-select,
   .el-date-editor {
     width: 100%;

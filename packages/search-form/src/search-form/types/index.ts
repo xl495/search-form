@@ -41,6 +41,7 @@ export type IFieldEvent = {
   fetchOptionsMethod?: IFetchDict;
   transformOptions?: ITransformOptions;
   isHidden?: boolean, // 是否隐藏
+  isInputTrim?: boolean, // 是否去除前后空格
 }
 
 export type IField = Record<string, IFieldEvent>;

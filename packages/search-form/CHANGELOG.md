@@ -1,5 +1,11 @@
 # @tempoi/search-form
 
+## 1.2.25
+
+### Patch Changes
+
+- add input trim
+
 ## 1.2.24
 
 ### Patch Changes
