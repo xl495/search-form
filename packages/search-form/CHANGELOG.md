@@ -1,5 +1,11 @@
 # @tempoi/search-form
 
+## 1.2.26
+
+### Patch Changes
+
+- build
+
 ## 1.2.25
 
 ### Patch Changes
