@@ -15,7 +15,7 @@
       <el-col
         v-for="(item, key) in _fields"
         :key="key"
-        :span="item.isHidden ? 0 : Number(props.rowSpan)"
+        :md="item.isHidden ? 0 : Number(props.rowSpan)"
       >
         <template v-if="isEmpty(item.isHidden) || item.isHidden === false">
           <el-form-item
