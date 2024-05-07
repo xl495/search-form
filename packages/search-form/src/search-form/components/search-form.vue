@@ -6,6 +6,8 @@
     :model="_fields"
     :label-width="labelWidth"
     :label-position="props.labelPosition"
+    @submit.native.prevent
+    @submit="onSubmit"
   >
     <el-row
       :gutter="Number(props.rowGutter)"
@@ -115,7 +117,7 @@
             type="primary"
             :style="{ 'min-width': props.expand?.minWidth || '6.25rem' }"
             :loading="isSearchLoading"
-            @click="onSubmit()"
+            native-type="submit"
             >查询</el-button
           >
           <el-button
