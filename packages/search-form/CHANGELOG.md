@@ -1,5 +1,11 @@
 # @tempoi/search-form
 
+## 1.2.27
+
+### Patch Changes
+
+- add submit enter on Click
+
 ## 1.2.26
 
 ### Patch Changes
