@@ -1,5 +1,11 @@
 # @tempoi/search-form
 
+## 1.2.29
+
+### Patch Changes
+
+- change types
+
 ## 1.2.28
 
 ### Patch Changes

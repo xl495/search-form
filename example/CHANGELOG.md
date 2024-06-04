@@ -1,5 +1,12 @@
 # example
 
+## 1.2.29
+
+### Patch Changes
+
+- Updated dependencies
+  - @tempoi/search-form@1.2.29
+
 ## 1.2.28
 
 ### Patch Changes

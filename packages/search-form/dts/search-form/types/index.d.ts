@@ -20,11 +20,11 @@ export type ITransformOptions = (options?: IOptions[]) => IOptions[];
 export type IFieldEvent = {
     label: string;
     labelWidth?: string | number;
-    value: IFieldEventValue;
+    value?: IFieldEventValue;
     placeholder?: string;
-    inputType: IType;
-    event: Event | {};
-    attr: HTMLAttributes | any;
+    inputType?: IType;
+    event?: Event | {};
+    attr?: HTMLAttributes | any;
     options?: IOptions[] | null;
     optionsKey?: string;
     getOptionforKey?: IGetOptionforKey;
