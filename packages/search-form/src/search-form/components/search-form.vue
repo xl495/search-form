@@ -1,133 +1,48 @@
 <template>
-  <el-form
-    ref="searchRef"
-    class="m-search-model-form"
-    :size="props.size"
-    :model="_fields"
-    :label-width="labelWidth"
-    :label-position="props.labelPosition"
-    @submit.native.prevent
-    @submit="onSubmit"
-  >
-    <el-row
-      :gutter="Number(props.rowGutter)"
-      type="flex"
-      :justify="props.rowJustify"
-    >
-      <el-col
-        v-for="(item, key) in _fields"
-        :key="key"
-        :md="item.isHidden ? 0 : Number(props.rowSpan)"
-      >
+  <el-form ref="searchRef" class="m-search-model-form" :size="props.size" :model="_fields" :label-width="labelWidth"
+    :label-position="props.labelPosition" @submit.native.prevent @submit="onSubmit">
+    <el-row :gutter="Number(props.rowGutter)" type="flex" :justify="props.rowJustify">
+      <el-col v-for="(item, key) in _fields" :key="key" :md="item.isHidden ? 0 : Number(props.rowSpan)">
         <template v-if="isEmpty(item.isHidden) || item.isHidden === false">
-          <el-form-item
-            v-if="item.inputType === IType.Input"
-            :label="item.label"
-            :label-width="item.labelWidth"
-          >
-            <el-input
-              v-model="_fields[key].value"
-              @blur="blurInputText(_fields[key])"
-              v-bind="item.attr"
-              :placeholder="item.placeholder || '请输入'"
-              clearable
-              v-on="item.event"
-            />
+          <el-form-item v-if="item.inputType === IType.Input" :label="item.label" :label-width="item.labelWidth">
+            <el-input v-model="_fields[key].value" @blur="blurInputText(_fields[key])" v-bind="item.attr"
+              :placeholder="item.placeholder || '请输入'" clearable v-on="item.event" />
           </el-form-item>
-          <el-form-item
-            v-else-if="item.inputType === IType.Select"
-            :label="item.label"
-            :label-width="item.labelWidth"
-          >
-            <el-select
-              v-model="_fields[key].value"
-              :placeholder="item.placeholder || '请选择'"
-              v-bind="item.attr"
-              clearable
-              v-on="item.event"
-            >
-              <el-option
-                v-for="(select, ISelect) in item.options"
-                :key="ISelect"
-                :label="select.label"
-                :value="select.value"
-                :disabled="select?.disabled === true"
-              />
+          <el-form-item v-else-if="item.inputType === IType.Select" :label="item.label" :label-width="item.labelWidth">
+            <el-select v-model="_fields[key].value" :placeholder="item.placeholder || '请选择'" v-bind="item.attr"
+              clearable v-on="item.event">
+              <el-option v-for="(select, ISelect) in item.options" :key="ISelect" :label="select.label"
+                :value="select.value" :disabled="select?.disabled === true" />
             </el-select>
           </el-form-item>
-          <el-form-item
-            v-else-if="
-              item.inputType === IType.Date ||
-              item.inputType === IType.Daterange
-            "
-            :label="item.label"
-            :label-width="item.labelWidth"
-          >
-            <el-date-picker
-              v-model="_fields[key].value"
-              style="--el-date-editor-daterange-width: 100%"
-              :type="item.inputType === IType.Date ? 'date' : 'daterange'"
-              :placeholder="item.placeholder || '请选择'"
+          <el-form-item v-else-if="
+            item.inputType === IType.Date ||
+            item.inputType === IType.Daterange
+          " :label="item.label" :label-width="item.labelWidth">
+            <el-date-picker v-model="_fields[key].value" style="--el-date-editor-daterange-width: 100%"
+              :type="item.inputType === IType.Date ? 'date' : 'daterange'" :placeholder="item.placeholder || '请选择'"
               :value-format="item.valueFormat || 'YYYY-MM-DDTHH:mm:ss.sssZ'"
-              :shortcuts="item.inputType === IType.Daterange ? shortcuts : []"
-              v-bind="item.attr"
-              clearable
-              v-on="item.event"
-            />
+              :shortcuts="item.inputType === IType.Daterange ? shortcuts : []" v-bind="item.attr" clearable
+              v-on="item.event" />
           </el-form-item>
-          <el-form-item
-            v-else-if="
-              item.inputType === IType.DateTime ||
-              item.inputType === IType.Datetimerange
-            "
-            :label="item.label"
-            :label-width="item.labelWidth"
-          >
-            <el-date-picker
-              v-model="_fields[key].value"
-              :type="
-                item.inputType === IType.DateTime ? 'datetime' : 'datetimerange'
-              "
-              :placeholder="item.placeholder || '请选择'"
-              :value-format="item.valueFormat || 'YYYY-MM-DDTHH:mm:ss.sssZ'"
-              :shortcuts="
-                item.inputType === IType.Datetimerange ? shortcuts : []
-              "
-              v-bind="item.attr"
-              clearable
-              v-on="item.event"
-            />
+          <el-form-item v-else-if="
+            item.inputType === IType.DateTime ||
+            item.inputType === IType.Datetimerange
+          " :label="item.label" :label-width="item.labelWidth">
+            <el-date-picker v-model="_fields[key].value" :type="item.inputType === IType.DateTime ? 'datetime' : 'datetimerange'
+              " :placeholder="item.placeholder || '请选择'" :value-format="item.valueFormat || 'YYYY-MM-DDTHH:mm:ss.sssZ'"
+              :shortcuts="item.inputType === IType.Datetimerange ? shortcuts : []
+                " v-bind="item.attr" clearable v-on="item.event" />
           </el-form-item>
         </template>
       </el-col>
-      <el-col
-        class="m-search-model-last"
-        :span="getToolRow() || Number(props.rowSpan)"
-      >
-        <el-form-item
-          :class="['el-form-item-last', props.expand.classes]"
-          :style="props.expand.style"
-        >
-          <el-button
-            :style="{ 'min-width': props.expand?.minWidth || '6.25rem' }"
-            @click="onReset"
-            >重置</el-button
-          >
-          <el-button
-            type="primary"
-            :style="{ 'min-width': props.expand?.minWidth || '6.25rem' }"
-            :loading="isSearchLoading"
-            native-type="submit"
-            >查询</el-button
-          >
-          <el-button
-            v-if="props.expand.isExport"
-            :loading="props.expand.isExportLoading"
-            type="primary"
-            :style="{ 'min-width': props.expand?.minWidth || '6.25rem' }"
-            @click="onExport"
-            >导出</el-button
-          >
+      <el-col class="m-search-model-last" :span="getToolRow() || Number(props.rowSpan)">
+        <el-form-item :class="['el-form-item-last', props.expand.classes]" :style="props.expand.style">
+          <el-button :style="{ 'min-width': props.expand?.minWidth || '6.25rem' }" @click="onReset">重置</el-button>
+          <el-button type="primary" :style="{ 'min-width': props.expand?.minWidth || '6.25rem' }"
+            :loading="isSearchLoading" native-type="submit">查询</el-button>
+          <el-button v-if="props.expand.isExport" :loading="props.expand.isExportLoading" type="primary"
+            :style="{ 'min-width': props.expand?.minWidth || '6.25rem' }" @click="onExport">导出</el-button>
           <slot name="button-group" />
         </el-form-item>
       </el-col>
@@ -212,10 +127,24 @@ const searchRef = ref();
 
 const isSearchLoading = ref(false);
 
+const createField = (fields: IFieldEvent) => {
+  return {
+    value: "",
+    inputType: IType.Input,
+    placeholder: "",
+    attr: {},
+    event: {},
+    isHidden: false,
+    labelWidth: "70px",
+    isInputTrim: true,
+    ...fields
+  }
+}
+
 const initDefault = async () => {
   for (const key in props.fields) {
-    const element: IFieldEvent = props.fields[key];
-    _fieldsDefaultValue.value[key] = element.value;
+    const element: IFieldEvent = createField(props.fields[key]);
+    _fieldsDefaultValue.value[key] = element.value as IFieldEventValue;
     // 封装 Select 获取方法
     if (
       element.inputType === IType.Select &&
@@ -278,7 +207,7 @@ const getSearchData = () => {
   for (const key in _fields.value) {
     const item = _fields.value[key];
     if (Object.prototype.hasOwnProperty.call(_fields.value, key)) {
-      const value: IFieldEventValue = item.value;
+      const value: IFieldEventValue = item.value as IFieldEventValue;
       if (
         !isEmpty(value) &&
         ["createdAt", "updatedAt"].includes(key) &&
@@ -401,6 +330,7 @@ defineExpose({
 
 <style lang="scss">
 .m-search-model-form {
+
   .el-select,
   .el-date-editor {
     width: 100%;
