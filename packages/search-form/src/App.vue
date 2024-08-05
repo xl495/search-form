@@ -13,7 +13,6 @@ const fields = ref<IField>({
         event: {},
         attr: {
             suffixIcon: 'Search',
-            
         },
     },
     'nickName': {
@@ -22,6 +21,7 @@ const fields = ref<IField>({
         inputType: IType.Input,
         placeholder: '请输入昵称',
         event: {},
+        isExpandHiddenShow: true,
         attr: {
             suffixIcon: 'Search',
         },
@@ -31,6 +31,7 @@ const fields = ref<IField>({
         value: '',
         placeholder: '',
         inputType: IType.Select,
+        isExpandHiddenShow: true,
         options: [
             {
                 label: 'ALL',
@@ -69,12 +70,13 @@ const submit = (data: Record<string, any>) => {
 
 <template>
     <div class="wrap">
-        <search-form style="width: 1200px;" :fields="fields" :label-width="120" @on-submit="submit" />
+        <search-form style="width: 1559px;" :fields="fields" :label-width="120" :row-span="6" @on-submit="submit"
+            :expand="{ isExpand: true }" />
     </div>
 </template>
 
 
-<style lang="scss" >
+<style lang="scss">
 .wrap {
     display: flex;
     justify-content: center;

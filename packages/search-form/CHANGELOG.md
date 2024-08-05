@@ -1,5 +1,35 @@
 # @tempoi/search-form
 
+## 1.2.34
+
+### Patch Changes
+
+- remove log
+
+## 1.2.33
+
+### Patch Changes
+
+- fix search
+
+## 1.2.32
+
+### Patch Changes
+
+- fix css
+
+## 1.2.31
+
+### Patch Changes
+
+- build search-form
+
+## 1.2.30
+
+### Patch Changes
+
+- fix
+
 ## 1.2.29
 
 ### Patch Changes

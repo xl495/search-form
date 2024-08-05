@@ -14,12 +14,13 @@ export declare const SearchForm: {
             rowGutter?: string | number | undefined;
             labelPosition?: "left" | "right" | "top" | undefined;
             rowSpan?: string | number | undefined;
-            size?: "default" | "large" | "small" | undefined;
+            size?: "default" | "small" | "large" | undefined;
             expand?: import("./types/index").IExpand | undefined;
             isAutoSubmit?: boolean | undefined;
+            style?: unknown;
+            onReset?: ((...args: any[]) => any) | undefined;
             onOnSubmit?: ((...args: any[]) => any) | undefined;
             onExport?: ((...args: any[]) => any) | undefined;
-            onReset?: ((...args: any[]) => any) | undefined;
             key?: string | number | symbol | undefined;
             ref?: import("vue").VNodeRef | undefined;
             ref_for?: boolean | undefined;
@@ -63,7 +64,6 @@ export declare const SearchForm: {
                 [key: string]: any;
             }>) => void)[] | undefined;
             class?: unknown;
-            style?: unknown;
         };
         $attrs: {
             [x: string]: unknown;
@@ -109,7 +109,7 @@ export declare const SearchForm: {
                 default: number;
             };
             size: {
-                type: import("vue").PropType<"default" | "large" | "small">;
+                type: import("vue").PropType<"default" | "small" | "large">;
                 default: string;
             };
             expand: {
@@ -121,9 +121,9 @@ export declare const SearchForm: {
                 default: boolean;
             };
         }>> & {
+            onReset?: ((...args: any[]) => any) | undefined;
             onOnSubmit?: ((...args: any[]) => any) | undefined;
             onExport?: ((...args: any[]) => any) | undefined;
-            onReset?: ((...args: any[]) => any) | undefined;
         }, {
             getSearchData: () => Record<string, any>;
             fetchOptionsMethod: (...rest: any) => Promise<import("./types/index").IOptions[]>;
@@ -139,7 +139,7 @@ export declare const SearchForm: {
             rowGutter: string | number;
             labelPosition: "left" | "right" | "top";
             rowSpan: string | number;
-            size: "default" | "large" | "small";
+            size: "default" | "small" | "large";
             expand: import("./types/index").IExpand;
             isAutoSubmit: boolean;
         }, {}, string, {}> & {
@@ -193,7 +193,7 @@ export declare const SearchForm: {
             default: number;
         };
         size: {
-            type: import("vue").PropType<"default" | "large" | "small">;
+            type: import("vue").PropType<"default" | "small" | "large">;
             default: string;
         };
         expand: {
@@ -205,9 +205,9 @@ export declare const SearchForm: {
             default: boolean;
         };
     }>> & {
+        onReset?: ((...args: any[]) => any) | undefined;
         onOnSubmit?: ((...args: any[]) => any) | undefined;
         onExport?: ((...args: any[]) => any) | undefined;
-        onReset?: ((...args: any[]) => any) | undefined;
     } & import("vue").ShallowUnwrapRef<{
         getSearchData: () => Record<string, any>;
         fetchOptionsMethod: (...rest: any) => Promise<import("./types/index").IOptions[]>;
@@ -246,7 +246,7 @@ export declare const SearchForm: {
         default: number;
     };
     size: {
-        type: import("vue").PropType<"default" | "large" | "small">;
+        type: import("vue").PropType<"default" | "small" | "large">;
         default: string;
     };
     expand: {
@@ -258,9 +258,9 @@ export declare const SearchForm: {
         default: boolean;
     };
 }>> & {
+    onReset?: ((...args: any[]) => any) | undefined;
     onOnSubmit?: ((...args: any[]) => any) | undefined;
     onExport?: ((...args: any[]) => any) | undefined;
-    onReset?: ((...args: any[]) => any) | undefined;
 }, {
     getSearchData: () => Record<string, any>;
     fetchOptionsMethod: (...rest: any) => Promise<import("./types/index").IOptions[]>;
@@ -276,7 +276,7 @@ export declare const SearchForm: {
     rowGutter: string | number;
     labelPosition: "left" | "right" | "top";
     rowSpan: string | number;
-    size: "default" | "large" | "small";
+    size: "default" | "small" | "large";
     expand: import("./types/index").IExpand;
     isAutoSubmit: boolean;
 }, {}, string, {}> & import("vue").VNodeProps & import("vue").AllowedComponentProps & import("vue").ComponentCustomProps & (new () => {

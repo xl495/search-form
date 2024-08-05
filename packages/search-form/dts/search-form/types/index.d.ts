@@ -33,6 +33,7 @@ export type IFieldEvent = {
     fetchOptionsMethod?: IFetchDict;
     transformOptions?: ITransformOptions;
     isHidden?: boolean;
+    isExpandHiddenShow?: boolean;
     isInputTrim?: boolean;
 };
 export type IField = Record<string, IFieldEvent>;
@@ -42,4 +43,5 @@ export type IExpand = {
     classes?: string | '';
     style?: string | HTMLStyleElement;
     minWidth?: string;
+    isExpand?: boolean;
 };

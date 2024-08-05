@@ -1,9 +1,18 @@
 <template>
-  <el-form ref="searchRef" class="m-search-model-form" :size="props.size" :model="_fields" :label-width="labelWidth"
-    :label-position="props.labelPosition" @submit.native.prevent @submit="onSubmit">
+  <el-form ref="searchRef" class="m-search-model-form" :class="{ 'add-hide': props.expand.isExpand }" :size="props.size"
+    :model="_fields" :label-width="labelWidth" :label-position="props.labelPosition" @submit.native.prevent
+    @submit="onSubmit">
+    <div v-if="Object.keys(props.fields).length >= 4 && props.expand.isExpand" class="hide-wrap" :class="{
+      'hide-wrap-active': isExpandHidden,
+    }" @click="handleHide">
+      <el-icon class="hide-icon">
+        <ArrowDownBold />
+      </el-icon>
+    </div>
     <el-row :gutter="Number(props.rowGutter)" type="flex" :justify="props.rowJustify">
-      <el-col v-for="(item, key) in _fields" :key="key" :md="item.isHidden ? 0 : Number(props.rowSpan)">
-        <template v-if="isEmpty(item.isHidden) || item.isHidden === false">
+      <el-col v-for="(item, key) in _fields" :key="key" :md="item.isHidden || isExpandHidden && !item?.isExpandHiddenShow ? 0 : Number(props.rowSpan)">
+        <template
+          v-if="(isEmpty(item.isHidden) || item.isHidden === false) && (isExpandHidden && item?.isExpandHiddenShow || !isExpandHidden)">
           <el-form-item v-if="item.inputType === IType.Input" :label="item.label" :label-width="item.labelWidth">
             <el-input v-model="_fields[key].value" @blur="blurInputText(_fields[key])" v-bind="item.attr"
               :placeholder="item.placeholder || '请输入'" clearable v-on="item.event" />
@@ -71,7 +80,9 @@ import {
   ElSelect,
   ElDatePicker,
   ElButton,
+  ElIcon
 } from "element-plus";
+import ArrowDownBold from "./arrowDownBold.vue"
 import { initDefaultRow, isEmpty } from "../utils";
 
 type IProps = {
@@ -104,6 +115,7 @@ const props = withDefaults(defineProps<IProps>(), {
       style: ``,
       isExport: false,
       isExportLoading: false,
+      isExpand: true,
       minWidth: "6.25rem",
     };
   },
@@ -127,23 +139,25 @@ const searchRef = ref();
 
 const isSearchLoading = ref(false);
 
-const createField = (fields: IFieldEvent) => {
-  return {
-    value: "",
-    inputType: IType.Input,
-    placeholder: "",
-    attr: {},
-    event: {},
-    isHidden: false,
-    labelWidth: "70px",
-    isInputTrim: true,
-    ...fields
-  }
-}
+const isExpandHidden = ref(false);
+
+const propsDefaultHide = ref<
+  Record<string, boolean>
+>({});
 
 const initDefault = async () => {
   for (const key in props.fields) {
-    const element: IFieldEvent = createField(props.fields[key]);
+    const element: IFieldEvent = props.fields[key];
+    propsDefaultHide.value[key] = !!element.isExpandHiddenShow;
+    if (isEmpty(element.attr)) {
+      element.attr = {}
+    }
+    if (isEmpty(element.event)) {
+      element.event = {}
+    }
+    if (isEmpty(element.isInputTrim)) {
+      element.isInputTrim = true
+    }
     _fieldsDefaultValue.value[key] = element.value as IFieldEventValue;
     // 封装 Select 获取方法
     if (
@@ -230,6 +244,24 @@ const getSearchData = () => {
   return searchData;
 };
 
+const handleHide = () => {
+  Object.keys(_fields.value).forEach((key) => {
+    if (!isExpandHidden.value) {
+      if (propsDefaultHide.value[key]) {
+        _fields.value[key].isExpandHiddenShow = true;
+      }
+    } else {
+      _fields.value[key].isExpandHiddenShow = propsDefaultHide.value[key];
+    }
+  });
+
+  if (!isExpandHidden.value) {
+    isExpandHidden.value = true;
+  } else {
+    isExpandHidden.value = false;
+  }
+}
+
 // 搜索条件提交
 const onSubmit = () => {
   emits("onSubmit", getSearchData());
@@ -244,7 +276,8 @@ const onExport = () => {
 
 // 工具栏沾满当前行剩余空间
 const getToolRow = () => {
-  const colNumber = 24 / Number(props.rowSpan);
+  const rowSpan = Object.keys(_fields.value).map(key => !_fields.value[key]?.isHidden).length;
+  const colNumber = 24 / Number(rowSpan);
   let colSpan = 0;
   if (Object.keys(_fields.value).length % colNumber === 0) {
     colSpan = 24;
@@ -330,6 +363,11 @@ defineExpose({
 
 <style lang="scss">
 .m-search-model-form {
+  position: relative;
+
+  &.add-hide {
+    padding: 10px 16px 0 0;
+  }
 
   .el-select,
   .el-date-editor {
@@ -349,7 +387,30 @@ defineExpose({
   .m-search-model-last {
     display: flex;
     align-items: center;
-    justify-content: flex-end;
+  }
+
+  .hide-wrap {
+    position: absolute;
+    right: -6px;
+    top: -6px;
+    border: 1px solid #dcdfe6;
+    border-radius: 50%;
+    height: 24px;
+    width: 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    z-index: 2;
+    transition: all 0.3s ease-in-out;
+
+    &.hide-wrap-active {
+      transform: rotate(180deg);
+    }
+
+    .hide-icon {
+      cursor: pointer;
+    }
   }
 }
 </style>

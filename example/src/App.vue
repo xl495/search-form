@@ -67,6 +67,6 @@ const submit = (data: Record<string, any>) => {
 
 <template>
   <div>
-    <m-search-form ref="searchForm" style="width: 1200px;" :fields="fields" :label-width="120" @on-submit="submit" />
+    <m-search-form ref="searchForm" style="width: 1559px;" :fields="fields" :label-width="120" @on-submit="submit" />
   </div>
 </template>

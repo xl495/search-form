@@ -1,18 +1,49 @@
 class AjaxRequest {
-    url: string;
-    method: string;
-    data?: any;
+    url: string = '';
+    method: string = 'POST';
+    headers?: Record<string, string> = {};
 
-    constructor(url: string, method: string = 'GET', data?: any) {
-        this.url = url;
+    constructor({
+        baseURL,
+        method = 'post',
+        headers = {}
+    }: {
+        baseURL: string,
+        method?: string,
+        headers?: {}
+    }
+    ) {
+        this.url = baseURL;
         this.method = method;
-        this.data = data;
+        this.headers = headers;
     }
 
-    send(): Promise<any> {
+    send(
+        file: File,
+        config?: {
+            onUploadProgress?: (progressEvent: any) => void,
+            onUploadError?: (error: any) => void
+        }
+    ): Promise<any> {
         return new Promise((resolve, reject) => {
             const xhr = new XMLHttpRequest();
             xhr.open(this.method, this.url, true);
+
+            if (config && config.onUploadProgress) {
+                xhr.upload.onprogress = config.onUploadProgress;
+            }
+
+            if (config && config.onUploadError) {
+                xhr.upload.onerror = config.onUploadError;
+            }
+
+            // headers
+            for (const key in this.headers) {
+                if (this.headers.hasOwnProperty(key)) {
+                    xhr.setRequestHeader(key, this.headers[key]);
+                }
+            }
+
             xhr.onreadystatechange = function () {
                 if (xhr.readyState === 4) {
                     if (xhr.status >= 200 && xhr.status < 300) {
@@ -22,12 +53,10 @@ class AjaxRequest {
                     }
                 }
             };
-            if (this.method === 'POST' || this.method === 'PUT') {
-                xhr.setRequestHeader('Content-Type', 'application/json');
-                xhr.send(JSON.stringify(this.data));
-            } else {
-                xhr.send();
-            }
+            const formData = new FormData();
+            formData.append('file', file);
+            xhr.setRequestHeader('content-type', 'multipart/form-data');
+            xhr.send(formData);
         });
     }
 }

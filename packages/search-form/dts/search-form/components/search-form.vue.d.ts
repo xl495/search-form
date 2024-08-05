@@ -41,9 +41,9 @@ declare const _default: __VLS_WithTemplateSlots<import("vue").DefineComponent<__
     expand(): IExpand;
     isAutoSubmit: boolean;
 }>>> & {
+    onReset?: ((...args: any[]) => any) | undefined;
     onOnSubmit?: ((...args: any[]) => any) | undefined;
     onExport?: ((...args: any[]) => any) | undefined;
-    onReset?: ((...args: any[]) => any) | undefined;
 }, {
     fields: IField;
     labelWidth: string | number;
@@ -52,7 +52,7 @@ declare const _default: __VLS_WithTemplateSlots<import("vue").DefineComponent<__
     rowGutter: string | number;
     labelPosition: "left" | "right" | "top";
     rowSpan: string | number;
-    size: "default" | "large" | "small";
+    size: "default" | "small" | "large";
     expand: IExpand;
     isAutoSubmit: boolean;
 }, {}>, {

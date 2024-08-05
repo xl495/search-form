@@ -11,8 +11,10 @@
         <div class="upload-file-item-info__action">
           <!-- 上传按钮 -->
           <div class="upload-file-item-info__action-upload" @click="startUpload(fileItem)">
+            <div class="dot"></div>
+            <div class="progress" :style="{ '--progress-width': fileItem.progress + '%' }"></div>
             <i class="iconfont icon-upload" v-if="fileItem.status !== 'uploading'"></i>
-            {{  fileItem.status === 'uploading' ? fileItem.progress + '%' : '' }}
+            {{ fileItem.status === 'uploading' ? fileItem.progress + '%' : '' }}
           </div>
         </div>
       </div>
@@ -24,6 +26,17 @@
 import { computed } from "vue";
 import fileSystem from "./file";
 import { FileItemType } from "./file-item";
+import { AjaxRequest } from "./ajax";
+
+const http = new AjaxRequest({
+  baseURL: "http://localhost:4000/upload",
+  headers: {
+    'Authorization': `
+      Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInVzZXJFbWFpbCI6InNAYS5jb20iLCJpYXQiOjE3MjIzMjc4MzksImV4cCI6MTcyMjQxNDIzOX0.00nMn2H7sScGgpc41Bhqv-6WhQNmh3za-C0nre8zdAA
+    `
+  }
+});
+
 
 const formatSize = computed(() => {
   return (size: number) => {
@@ -50,6 +63,19 @@ const createFileItemStyle = (file: FileItemType) => {
 
 /* 上传文件 */
 const startUpload = (file: FileItemType) => {
+
+  // http.send(file.file, {
+  //   onUploadProgress: (progressEvent) => {
+  //     file.progress = Math.round((progressEvent.loaded / progressEvent.total) * 100);
+  //   }
+  // }).then((res) => {
+  //   console.log("上传成功", res);
+  //   file.status = "success";
+  // }).catch((err) => {
+  //   console.log("上传失败", err);
+  //   file.status = "error";
+  // });
+
   file.progress = 0;
   let fileProgress = setInterval(() => {
     file.progress += 3;
@@ -134,21 +160,32 @@ const startUpload = (file: FileItemType) => {
           // 添加进度条
           --progress-width: 100%;
 
-          &::before {
-            content: "";
+          .dot {
+            width: 10px;
+            height: 10px;
+            background-color: red;
+            border-radius: 50%;
             position: absolute;
             top: 0;
-            left: 0;
-            width: var(--progress-width);
-            height: 2px;
-            background-color: white;
-            transition: width 0.3s;
-            z-index: 1;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation: rotate 2s linear infinite;
           }
+
+          @keyframes rotate {
+            0% {
+              transform: translate(-50%, -50%) rotate(0deg);
+            }
+            100% {
+              transform: translate(-50%, -50%) rotate(360deg);
+            }
+          }
+
 
           i {
             font-size: var(--size);
           }
+
         }
       }
     }

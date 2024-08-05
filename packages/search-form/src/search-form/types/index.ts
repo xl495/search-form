@@ -41,6 +41,7 @@ export type IFieldEvent = {
   fetchOptionsMethod?: IFetchDict;
   transformOptions?: ITransformOptions;
   isHidden?: boolean, // 是否隐藏
+  isExpandHiddenShow?: boolean, // 隐藏后后是否显示
   isInputTrim?: boolean, // 是否去除前后空格
 }
 
@@ -52,4 +53,5 @@ export type IExpand = {
   classes?: string | '';
   style?: string | HTMLStyleElement,
   minWidth?: string
+  isExpand?: boolean;
 }
