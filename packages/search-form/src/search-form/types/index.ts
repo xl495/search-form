@@ -41,7 +41,9 @@ export type IFieldEvent = {
   fetchOptionsMethod?: IFetchDict;
   transformOptions?: ITransformOptions;
   isHidden?: boolean, // 是否隐藏
+  order?: number, // 排序
   isExpandHiddenShow?: boolean, // 隐藏后后是否显示
+  expandHiddenOrder?: number, // 隐藏后排序
   isInputTrim?: boolean, // 是否去除前后空格
 }
 

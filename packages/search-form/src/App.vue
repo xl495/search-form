@@ -39,6 +39,7 @@ const fields = ref<IField>({
             },
         ],
         optionsKey: 'accountType',
+        
         event: {},
         attr: {},
     },

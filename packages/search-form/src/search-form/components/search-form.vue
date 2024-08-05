@@ -1,8 +1,8 @@
 <template>
-  <el-form ref="searchRef" class="m-search-model-form" :class="{ 'add-hide': props.expand.isExpand }" :size="props.size"
+  <el-form ref="searchRef" class="m-search-model-form" :class="{ 'add-hide': props.expand?.isExpand }" :size="props.size"
     :model="_fields" :label-width="labelWidth" :label-position="props.labelPosition" @submit.native.prevent
     @submit="onSubmit">
-    <div v-if="Object.keys(props.fields).length >= 4 && props.expand.isExpand" class="hide-wrap" :class="{
+    <div v-if="Object.keys(props.fields).length >= 4 && props.expand?.isExpand" class="hide-wrap" :class="{
       'hide-wrap-active': isExpandHidden,
     }" @click="handleHide">
       <el-icon class="hide-icon">
@@ -10,7 +10,10 @@
       </el-icon>
     </div>
     <el-row :gutter="Number(props.rowGutter)" type="flex" :justify="props.rowJustify">
-      <el-col v-for="(item, key) in _fields" :key="key" :md="item.isHidden || isExpandHidden && !item?.isExpandHiddenShow ? 0 : Number(props.rowSpan)">
+      <el-col v-for="(item, key) in _fields" :key="key"
+        :md="item.isHidden || isExpandHidden && !item?.isExpandHiddenShow ? 0 : Number(props.rowSpan)"
+        :style="{ order: isExpandHidden && item?.isExpandHiddenShow ? item.expandHiddenOrder : item.order }"
+        >
         <template
           v-if="(isEmpty(item.isHidden) || item.isHidden === false) && (isExpandHidden && item?.isExpandHiddenShow || !isExpandHidden)">
           <el-form-item v-if="item.inputType === IType.Input" :label="item.label" :label-width="item.labelWidth">
@@ -45,7 +48,7 @@
           </el-form-item>
         </template>
       </el-col>
-      <el-col class="m-search-model-last" :span="getToolRow() || Number(props.rowSpan)">
+      <el-col class="m-search-model-last" :span="24">
         <el-form-item :class="['el-form-item-last', props.expand.classes]" :style="props.expand.style">
           <el-button :style="{ 'min-width': props.expand?.minWidth || '6.25rem' }" @click="onReset">重置</el-button>
           <el-button type="primary" :style="{ 'min-width': props.expand?.minWidth || '6.25rem' }"
@@ -157,6 +160,12 @@ const initDefault = async () => {
     }
     if (isEmpty(element.isInputTrim)) {
       element.isInputTrim = true
+    }
+    if (isEmpty(element.order)) {
+      element.order = 0
+    }
+    if (isEmpty(element.expandHiddenOrder)) {
+      element.expandHiddenOrder = 0
     }
     _fieldsDefaultValue.value[key] = element.value as IFieldEventValue;
     // 封装 Select 获取方法
@@ -275,19 +284,19 @@ const onExport = () => {
 };
 
 // 工具栏沾满当前行剩余空间
-const getToolRow = () => {
-  const rowSpan = Object.keys(_fields.value).map(key => !_fields.value[key]?.isHidden).length;
-  const colNumber = 24 / Number(rowSpan);
-  let colSpan = 0;
-  if (Object.keys(_fields.value).length % colNumber === 0) {
-    colSpan = 24;
-  } else {
-    colSpan =
-      24 -
-      (Object.keys(_fields.value).length % colNumber) * Number(props.rowSpan);
-  }
-  return colSpan;
-};
+// const getToolRow = () => {
+//   const rowSpan = Object.keys(_fields.value).map(key => !_fields.value[key]?.isHidden).length;
+//   const colNumber = 24 / Number(rowSpan);
+//   let colSpan = 0;
+//   if (Object.keys(_fields.value).length % colNumber === 0) {
+//     colSpan = 24;
+//   } else {
+//     colSpan =
+//       24 -
+//       (Object.keys(_fields.value).length % colNumber) * Number(props.rowSpan);
+//   }
+//   return colSpan;
+// };
 
 // 重置
 const onReset = () => {
@@ -387,6 +396,7 @@ defineExpose({
   .m-search-model-last {
     display: flex;
     align-items: center;
+    order: 9999;
   }
 
   .hide-wrap {

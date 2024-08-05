@@ -33,7 +33,9 @@ export type IFieldEvent = {
     fetchOptionsMethod?: IFetchDict;
     transformOptions?: ITransformOptions;
     isHidden?: boolean;
+    order?: number;
     isExpandHiddenShow?: boolean;
+    expandHiddenOrder?: number;
     isInputTrim?: boolean;
 };
 export type IField = Record<string, IFieldEvent>;

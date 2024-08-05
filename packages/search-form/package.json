@@ -1,6 +1,6 @@
 {
   "name": "@tempoi/search-form",
-  "version": "1.2.34",
+  "version": "1.2.37",
   "type": "module",
   "scripts": {
     "dev": "vite",
