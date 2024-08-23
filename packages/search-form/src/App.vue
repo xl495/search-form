@@ -39,7 +39,7 @@ const fields = ref<IField>({
             },
         ],
         optionsKey: 'accountType',
-        
+
         event: {},
         attr: {},
     },
@@ -60,19 +60,54 @@ const fields = ref<IField>({
         ],
         event: {},
         attr: {},
-    }
+    },
+    'infoType1': {
+        label: '账户性质111',
+        value: [],
+        placeholder: '',
+        inputType: IType.Select,
+        isExpandHiddenShow: true,
+        options: [ ],
+        event: { },
+        attr: {
+            'multiple': true,
+        },
+    },
+    ownerType1: {
+        label: '收款人类型1',
+        value: '',
+        placeholder: '',
+        inputType: IType.Select,
+        options: [
+            {
+                label: 'ALL',
+                value: '',
+            },
+            {
+                label: 'ALL1',
+                value: 0,
+            },
+        ],
+        event: {},
+        attr: {},
+    },
 })
 
 const submit = (data: Record<string, any>) => {
     console.log(data)
 }
 
+const expand = ref({
+    isExpand: true,
+    isDefaultExpandHidden: true
+})
+
 </script>
 
 <template>
     <div class="wrap">
         <search-form style="width: 1559px;" :fields="fields" :label-width="120" :row-span="6" @on-submit="submit"
-            :expand="{ isExpand: true }" />
+            :expand="expand" />
     </div>
 </template>
 

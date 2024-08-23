@@ -45,6 +45,9 @@ export type IFieldEvent = {
   isExpandHiddenShow?: boolean, // 隐藏后后是否显示
   expandHiddenOrder?: number, // 隐藏后排序
   isInputTrim?: boolean, // 是否去除前后空格
+  checkAll?: boolean, // 多选时是否全选
+  indeterminate?: boolean, // 多选时是否半选
+  handleCheckAll?: (value: string | number | boolean, item: IFieldEvent) => void, // 全选事件
 }
 
 export type IField = Record<string, IFieldEvent>;
@@ -55,5 +58,8 @@ export type IExpand = {
   classes?: string | '';
   style?: string | HTMLStyleElement,
   minWidth?: string
+  // 是否显示展开隐藏按钮
   isExpand?: boolean;
+  // 默认展开隐藏
+  isDefaultExpandHidden?: boolean;
 }

@@ -1,5 +1,65 @@
 # @tempoi/search-form
 
+## 1.2.47
+
+### Patch Changes
+
+- remove log
+
+## 1.2.46
+
+### Patch Changes
+
+- fix async add opction
+
+## 1.2.45
+
+### Patch Changes
+
+- fix transformOptions fun
+
+## 1.2.44
+
+### Patch Changes
+
+- feat loading
+
+## 1.2.43
+
+### Patch Changes
+
+- build
+
+## 1.2.42
+
+### Patch Changes
+
+- feat select all
+
+## 1.2.41
+
+### Patch Changes
+
+- Select all parameters are null
+
+## 1.2.40
+
+### Patch Changes
+
+- fix
+
+## 1.2.39
+
+### Patch Changes
+
+- fix init
+
+## 1.2.38
+
+### Patch Changes
+
+- add defualt props isDefaultExpandHidden
+
 ## 1.2.37
 
 ### Patch Changes

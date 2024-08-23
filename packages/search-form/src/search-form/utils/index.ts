@@ -23,7 +23,6 @@ export const isEmpty = (value: any) => {
 
 export const initDefaultRow = (field: IFieldEvent) => {
     if (field.inputType === IType.Select) {
-
         const getDictValue = (optionsValue: IOptions[], value: string | number): IOptions => {
             const options = computed<IOptions[]>(() => optionsValue || [])
             // 不存在值 直接返回 一个空对象 防止取不到值 报错

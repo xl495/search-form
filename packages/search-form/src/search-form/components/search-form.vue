@@ -1,8 +1,8 @@
 <template>
-  <el-form ref="searchRef" class="m-search-model-form" :class="{ 'add-hide': props.expand?.isExpand }" :size="props.size"
-    :model="_fields" :label-width="labelWidth" :label-position="props.labelPosition" @submit.native.prevent
-    @submit="onSubmit">
-    <div v-if="Object.keys(props.fields).length >= 4 && props.expand?.isExpand" class="hide-wrap" :class="{
+  <el-form ref="searchRef" class="m-search-model-form" :class="{ 'add-hide': expandOptions?.isExpand }"
+    :size="props.size" :model="_fields" :label-width="labelWidth" :label-position="props.labelPosition"
+    @submit.native.prevent @submit="onSubmit">
+    <div v-if="Object.keys(props.fields).length >= 4 && expandOptions?.isExpand" class="hide-wrap" :class="{
       'hide-wrap-active': isExpandHidden,
     }" @click="handleHide">
       <el-icon class="hide-icon">
@@ -12,8 +12,7 @@
     <el-row :gutter="Number(props.rowGutter)" type="flex" :justify="props.rowJustify">
       <el-col v-for="(item, key) in _fields" :key="key"
         :md="item.isHidden || isExpandHidden && !item?.isExpandHiddenShow ? 0 : Number(props.rowSpan)"
-        :style="{ order: isExpandHidden && item?.isExpandHiddenShow ? item.expandHiddenOrder : item.order }"
-        >
+        :style="{ order: isExpandHidden && item?.isExpandHiddenShow ? item.expandHiddenOrder : item.order }">
         <template
           v-if="(isEmpty(item.isHidden) || item.isHidden === false) && (isExpandHidden && item?.isExpandHiddenShow || !isExpandHidden)">
           <el-form-item v-if="item.inputType === IType.Input" :label="item.label" :label-width="item.labelWidth">
@@ -21,8 +20,18 @@
               :placeholder="item.placeholder || '请输入'" clearable v-on="item.event" />
           </el-form-item>
           <el-form-item v-else-if="item.inputType === IType.Select" :label="item.label" :label-width="item.labelWidth">
-            <el-select v-model="_fields[key].value" :placeholder="item.placeholder || '请选择'" v-bind="item.attr"
-              clearable v-on="item.event">
+            <el-select popper-class="m-search-model-select-header" v-model="_fields[key].value"
+              :placeholder="item.placeholder || '请选择'" v-bind="item.attr" clearable
+              @change="e => selectChangeItem(e, _fields[key].options, _fields[key])" v-on="item.event">
+              <template #header v-if="item.attr?.multiple">
+                <el-checkbox v-model="_fields[key].checkAll" :indeterminate="_fields[key].indeterminate" @change="(value: CheckboxValueType) => {
+                  if (_fields[key] && _fields[key]?.handleCheckAll) {
+                    (_fields[key]!.handleCheckAll as Function)(value, _fields[key]);
+                  }
+                }">
+                  All
+                </el-checkbox>
+              </template>
               <el-option v-for="(select, ISelect) in item.options" :key="ISelect" :label="select.label"
                 :value="select.value" :disabled="select?.disabled === true" />
             </el-select>
@@ -49,12 +58,12 @@
         </template>
       </el-col>
       <el-col class="m-search-model-last" :span="24">
-        <el-form-item :class="['el-form-item-last', props.expand.classes]" :style="props.expand.style">
-          <el-button :style="{ 'min-width': props.expand?.minWidth || '6.25rem' }" @click="onReset">重置</el-button>
-          <el-button type="primary" :style="{ 'min-width': props.expand?.minWidth || '6.25rem' }"
+        <el-form-item :class="['el-form-item-last', expandOptions.classes]" :style="expandOptions.style">
+          <el-button :style="{ 'min-width': expandOptions?.minWidth || '6.25rem' }" @click="onReset">重置</el-button>
+          <el-button type="primary" :style="{ 'min-width': expandOptions?.minWidth || '6.25rem' }"
             :loading="isSearchLoading" native-type="submit">查询</el-button>
-          <el-button v-if="props.expand.isExport" :loading="props.expand.isExportLoading" type="primary"
-            :style="{ 'min-width': props.expand?.minWidth || '6.25rem' }" @click="onExport">导出</el-button>
+          <el-button v-if="expandOptions.isExport" :loading="expandOptions.isExportLoading" type="primary"
+            :style="{ 'min-width': expandOptions?.minWidth || '6.25rem' }" @click="onExport">导出</el-button>
           <slot name="button-group" />
         </el-form-item>
       </el-col>
@@ -63,7 +72,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, effect, inject } from "vue";
+import { ref, effect, inject, watch, WatchStopHandle, onUnmounted } from "vue";
 import dayjs from "dayjs";
 import {
   IField,
@@ -83,10 +92,13 @@ import {
   ElSelect,
   ElDatePicker,
   ElButton,
-  ElIcon
+  ElCheckbox,
+  ElIcon,
+  CheckboxValueType
 } from "element-plus";
 import ArrowDownBold from "./arrowDownBold.vue"
 import { initDefaultRow, isEmpty } from "../utils";
+import { debounce, isArray } from "radash";
 
 type IProps = {
   fields: IField;
@@ -119,6 +131,7 @@ const props = withDefaults(defineProps<IProps>(), {
       isExport: false,
       isExportLoading: false,
       isExpand: true,
+      isDefaultExpandHidden: false,
       minWidth: "6.25rem",
     };
   },
@@ -133,12 +146,26 @@ const _fieldsDefaultValue = ref<
   Record<string, string | number | string[] | number[]>
 >({});
 
+const _fieldsWatch = ref<Record<keyof typeof props.fields, WatchStopHandle>>({});
+
 const fetchOptionsMethod = inject<(...rest: any) => Promise<IOptions[]>>(
   "mSearchFormFetchOptions",
   () => Promise.resolve([])
 );
 
 const searchRef = ref();
+
+// 默认参数 避免传控空对象造成参数丢失
+const expandOptions = ref<IExpand>({
+  classes: "",
+  style: ``,
+  isExport: false,
+  isExportLoading: false,
+  isExpand: true,
+  isDefaultExpandHidden: false,
+  minWidth: "6.25rem",
+  ...props.expand,
+});
 
 const isSearchLoading = ref(false);
 
@@ -149,25 +176,81 @@ const propsDefaultHide = ref<
 >({});
 
 const initDefault = async () => {
+  // 防止传入空对象
   for (const key in props.fields) {
     const element: IFieldEvent = props.fields[key];
     propsDefaultHide.value[key] = !!element.isExpandHiddenShow;
     if (isEmpty(element.attr)) {
-      element.attr = {}
+      Reflect.set(element, "attr", {});
     }
     if (isEmpty(element.event)) {
-      element.event = {}
+      Reflect.set(element, "event", {});
     }
     if (isEmpty(element.isInputTrim)) {
-      element.isInputTrim = true
+      Reflect.set(element, "isInputTrim", true);
     }
     if (isEmpty(element.order)) {
-      element.order = 0
+      Reflect.set(element, "order", 0);
     }
     if (isEmpty(element.expandHiddenOrder)) {
-      element.expandHiddenOrder = 0
+      Reflect.set(element, "expandHiddenOrder", 0);
     }
+    if (isEmpty(element.checkAll)) {
+      Reflect.set(element, "checkAll", false);
+      if (element.value && element.options) {
+        Reflect.set(element, "checkAll", element.options?.length === (element.value as (string | number)[])?.length );
+      }
+      if (isArray(element.value) && element.value?.length === 0 && isArray(element.options) && element.options.length === 0) {
+        Reflect.set(element, "checkAll", false);
+      }
+    }
+    if (isEmpty(element.indeterminate)) {
+      Reflect.set(element, "indeterminate", false);
+    }
+    if (isEmpty(element.handleCheckAll)) {
+      element.handleCheckAll = (value, element) => {
+        if (value && element.options) {
+          element.value = element.options?.map((item) => item.value as number);
+          element.checkAll = true;
+          element.indeterminate = false
+        } else {
+          element.value = [];
+          element.checkAll = false;
+          element.indeterminate = false
+        }
+      }
+    }
+
+    if (element.inputType === IType.Select && element.attr?.multiple) {
+      // 是否存在监听
+      if (_fieldsWatch.value[key]) {
+        // 清除监听
+        _fieldsWatch.value[key]();
+      }
+      // 监听
+      const watchStop = watch(
+        [
+          () => _fields.value[key].value, 
+          () => _fields.value[key].options,
+        ],
+        debounce({ delay: 300 }, ([value, options]) => {
+          selectChangeItem(value, options, _fields.value[key]);
+        }),
+        {
+          deep: true,
+        }
+      );
+      _fieldsWatch.value[key] = watchStop;
+    }
+
     _fieldsDefaultValue.value[key] = element.value as IFieldEventValue;
+  }
+  if (expandOptions.value.isExpand && expandOptions.value.isDefaultExpandHidden) {
+    handleHide();
+  }
+  // 这一步处理网络请求可能绘耗时
+  for (const key in props.fields) {
+    const element: IFieldEvent = props.fields[key];
     // 封装 Select 获取方法
     if (
       element.inputType === IType.Select &&
@@ -187,14 +270,14 @@ const initDefault = async () => {
       (typeof fetchOptionsMethod === "function" ||
         typeof element.fetchOptionsMethod === "function")
     ) {
-      element.attr.loading = true;
+      Reflect.set(element.attr, "loading", false);
       const method =
         typeof element.fetchOptionsMethod === "function"
           ? element.fetchOptionsMethod
           : fetchOptionsMethod;
       await method(element.optionsKey)
         .then((res: any) => {
-          element.options = res;
+          Reflect.set(element, "options", res);
           return {
             result: res,
             element: element,
@@ -205,14 +288,14 @@ const initDefault = async () => {
             element.transformOptions &&
             typeof element.transformOptions === "function"
           ) {
-            element.options = element?.transformOptions(res.result);
+            Reflect.set(element, "options", element?.transformOptions(res.result));
           }
         })
         .catch((err: any) => {
           throw new Error(err);
         })
         .finally(() => {
-          element.attr.loading = false;
+          Reflect.set(element.attr, "loading", false);
         });
     }
   }
@@ -224,11 +307,34 @@ effect(() => {
   isSearchLoading.value = props.isSearchLoading;
 });
 
+// 判断多选选择框是否全选
+function selectChangeItem(value: string[] | number[], options: IOptions[] | null | undefined, item: IFieldEvent) {
+  if (value.length === 0 && options?.length === 0) {
+    Reflect.set(item, "checkAll", false);
+    Reflect.set(item, "indeterminate", false);
+    return;
+  }
+  if (value.length === options?.length) {
+    Reflect.set(item, "checkAll", true);
+    Reflect.set(item, "indeterminate", false);
+  } else if (value.length === 0) {
+    Reflect.set(item, "checkAll", false);
+    Reflect.set(item, "indeterminate", false);
+  } else {
+    Reflect.set(item, "checkAll", false);
+    Reflect.set(item, "indeterminate", true);
+  }
+}
+
 // 获取当前搜索条件
-const getSearchData = () => {
+function getSearchData() {
   const searchData: Record<string, any> = {};
   for (const key in _fields.value) {
     const item = _fields.value[key];
+    // 如果是 Select 并且 options 的长度和 value 的长度一样，说明是全部选中
+    if (item.inputType === IType.Select && item?.options?.length === (item?.value as (string | number)[])?.length) {
+      continue;
+    }
     if (Object.prototype.hasOwnProperty.call(_fields.value, key)) {
       const value: IFieldEventValue = item.value as IFieldEventValue;
       if (
@@ -253,14 +359,14 @@ const getSearchData = () => {
   return searchData;
 };
 
-const handleHide = () => {
+function handleHide() {
   Object.keys(_fields.value).forEach((key) => {
     if (!isExpandHidden.value) {
       if (propsDefaultHide.value[key]) {
-        _fields.value[key].isExpandHiddenShow = true;
+        Reflect.set(_fields.value[key], "isExpandHiddenShow", true);
       }
     } else {
-      _fields.value[key].isExpandHiddenShow = propsDefaultHide.value[key];
+      Reflect.set(_fields.value[key], "isExpandHiddenShow", propsDefaultHide.value[key]);
     }
   });
 
@@ -283,29 +389,13 @@ const onExport = () => {
   emits("export", getSearchData());
 };
 
-// 工具栏沾满当前行剩余空间
-// const getToolRow = () => {
-//   const rowSpan = Object.keys(_fields.value).map(key => !_fields.value[key]?.isHidden).length;
-//   const colNumber = 24 / Number(rowSpan);
-//   let colSpan = 0;
-//   if (Object.keys(_fields.value).length % colNumber === 0) {
-//     colSpan = 24;
-//   } else {
-//     colSpan =
-//       24 -
-//       (Object.keys(_fields.value).length % colNumber) * Number(props.rowSpan);
-//   }
-//   return colSpan;
-// };
-
 // 重置
-const onReset = () => {
+function onReset() {
   let _fieldsValue: Record<string, any> = {};
 
   for (const key in _fieldsDefaultValue.value) {
     if (Object.prototype.hasOwnProperty.call(_fieldsDefaultValue.value, key)) {
       const value = (_fields.value[key].value = _fieldsDefaultValue.value[key]);
-
       if (
         !isEmpty(value) &&
         ["createdAt", "updatedAt"].includes(key) &&
@@ -314,14 +404,16 @@ const onReset = () => {
       ) {
         // 把查询开始时间设置为 00:00:00
         // 把查询结束时间设置为 23:59:59
-        _fieldsValue[key] = [
+        Reflect.set(_fieldsValue, key, [
           dayjs(value[0]).format("YYYY-MM-DDT00:00:00.sssZ"),
           dayjs(value[1]).format("YYYY-MM-DDT23:59:59.sssZ"),
-        ];
+        ]);
       } else if (value instanceof Array) {
-        if (value.length !== 0) _fieldsValue[key] = value;
+        if (value.length !== 0) {
+          Reflect.set(_fieldsValue, key, value);
+        }
       } else if (!isEmpty(value)) {
-        _fieldsValue[key] = value;
+        Reflect.set(_fieldsValue, key, value);
       }
     }
   }
@@ -329,7 +421,7 @@ const onReset = () => {
   emits("onSubmit", _fieldsValue);
 };
 
-const blurInputText = (item: IFieldEvent) => {
+function blurInputText(item: IFieldEvent) {
   if (!item.value || item?.isInputTrim === false) return;
   item.value = item.value.toString().trim();
 };
@@ -363,6 +455,16 @@ const shortcuts = [
     },
   },
 ];
+
+
+// 组件卸载时清除监听
+onUnmounted(() => {
+  for (const key in _fieldsWatch.value) {
+    if (_fieldsWatch.value[key]) {
+      _fieldsWatch.value[key]();
+    }
+  }
+});
 
 defineExpose({
   getSearchData,
@@ -421,6 +523,15 @@ defineExpose({
     .hide-icon {
       cursor: pointer;
     }
+  }
+
+
+}
+
+.m-search-model-select-header {
+  .el-checkbox {
+    display: flex;
+    height: unset;
   }
 }
 </style>

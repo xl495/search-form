@@ -1,6 +1,6 @@
 {
   "name": "@tempoi/search-form",
-  "version": "1.2.37",
+  "version": "1.2.47",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -24,7 +24,8 @@
   },
   "dependencies": {
     "dayjs": "^1.11.10",
-    "element-plus": "^2.4.1",
+    "element-plus": "^2.4.4",
+    "radash": "^12.1.0",
     "ts-morph": "^21.0.1",
     "vue": "^3.3.4"
   },

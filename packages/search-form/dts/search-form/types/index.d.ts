@@ -37,6 +37,9 @@ export type IFieldEvent = {
     isExpandHiddenShow?: boolean;
     expandHiddenOrder?: number;
     isInputTrim?: boolean;
+    checkAll?: boolean;
+    indeterminate?: boolean;
+    handleCheckAll?: (value: string | number | boolean, item: IFieldEvent) => void;
 };
 export type IField = Record<string, IFieldEvent>;
 export type IExpand = {
@@ -46,4 +49,5 @@ export type IExpand = {
     style?: string | HTMLStyleElement;
     minWidth?: string;
     isExpand?: boolean;
+    isDefaultExpandHidden?: boolean;
 };

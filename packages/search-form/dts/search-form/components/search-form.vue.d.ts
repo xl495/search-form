@@ -11,6 +11,7 @@ type IProps = {
     expand?: IExpand;
     isAutoSubmit?: boolean;
 };
+declare function getSearchData(): Record<string, any>;
 declare const _default: __VLS_WithTemplateSlots<import("vue").DefineComponent<__VLS_WithDefaults<__VLS_TypePropsToRuntimeProps<IProps>, {
     fields(): IField;
     labelWidth: string;
@@ -23,7 +24,7 @@ declare const _default: __VLS_WithTemplateSlots<import("vue").DefineComponent<__
     expand(): IExpand;
     isAutoSubmit: boolean;
 }>, {
-    getSearchData: () => Record<string, any>;
+    getSearchData: typeof getSearchData;
     fetchOptionsMethod: (...rest: any) => Promise<IOptions[]>;
 }, unknown, {}, {}, import("vue").ComponentOptionsMixin, import("vue").ComponentOptionsMixin, {
     onSubmit: (...args: any[]) => void;
